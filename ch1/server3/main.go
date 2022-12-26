@@ -17,7 +17,7 @@ func main() {
 	log.Fatal(http.ListenAndServe("localhost:8000", nil))
 }
 
-//!+handler
+// !+handler
 // handler echoes the HTTP request.
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s %s %s\n", r.Method, r.URL, r.Proto)
