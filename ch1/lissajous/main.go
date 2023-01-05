@@ -51,7 +51,7 @@ func main() {
 		return
 	}
 	//!+main
-	//lissajous(os.Stdout, nil)
+	// lissajous(os.Stdout, nil)
 }
 
 func lissajous(w http.ResponseWriter, r *http.Request) {
