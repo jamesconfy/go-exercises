@@ -17,6 +17,17 @@ func main() {
 	queue.Append("Marvelous")
 	fmt.Println(queue.Pop())
 	queue.Print()
+
+	var queue1 Queue
+	fmt.Println(queue1.IsEmpty())
+	fmt.Println(queue1.Pop())
+	queue1.Append("Jam")
+	queue1.Append("Confid")
+	queue1.Append("Vic")
+	queue1.Append("Meso")
+	queue1.Append("Marv")
+	fmt.Println(queue1.Pop())
+	queue1.Print()
 }
 
 func (q *Queue) Append(value string) {

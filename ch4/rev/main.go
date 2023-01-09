@@ -49,7 +49,7 @@ outer:
 	// NOTE: ignoring potential errors from input.Err()
 }
 
-//!+rev
+// !+rev
 // reverse reverses a slice of ints in place.
 func reverse(s []int) {
 	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
