@@ -8,10 +8,9 @@ package main
 
 import (
 	"fmt"
-	"sort"
 )
 
-//!+table
+// !+table
 // prereqs maps computer science courses to their prerequisites.
 var prereqs = map[string][]string{
 	"algorithms": {"data structures"},
@@ -34,7 +33,7 @@ var prereqs = map[string][]string{
 
 //!-table
 
-//!+main
+// !+main
 func main() {
 	for i, course := range topoSort(prereqs) {
 		fmt.Printf("%d:\t%s\n", i+1, course)
@@ -56,13 +55,14 @@ func topoSort(m map[string][]string) []string {
 		}
 	}
 
-	var keys []string
+	keys := make(map[string][]string, 0)
+	keys[""] = []string{}
 	for key := range m {
-		keys = append(keys, key)
+		keys[""] = append(keys[""], key)
 	}
 
-	sort.Strings(keys)
-	visitAll(keys)
+	// sort.Strings(keys)
+	visitAll(keys[""])
 	return order
 }
 
