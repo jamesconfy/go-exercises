@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/gopl.io/solution/ch5/solutions"
+	// _ "github.com/jamesconfy/ch2/tempconv"
+	_ "github.com/jamesconfy/ch2/tempconv"
+	"github.com/jamesconfy/solution/ch5/solutions"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-module github.com/gopl.io
+module github.com/jamesconfy
 
 go 1.19
 
