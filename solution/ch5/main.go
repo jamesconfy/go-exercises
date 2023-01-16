@@ -5,7 +5,7 @@ import (
 
 	// _ "github.com/jamesconfy/ch2/tempconv"
 	_ "github.com/jamesconfy/ch2/tempconv"
-	"github.com/jamesconfy/solution/ch5/solutions"
+	"github.com/jamesconfy/solution/ch5/5.15/solutions"
 )
 
 func main() {
