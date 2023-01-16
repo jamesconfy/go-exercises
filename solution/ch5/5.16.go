@@ -1,4 +1,4 @@
-package solutions
+package ch5
 
 // func main() {
 // 	var list = []string{"James", "Confidence", "Is", "A", "Boy"}

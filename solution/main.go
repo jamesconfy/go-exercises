@@ -4,8 +4,7 @@ import (
 	"fmt"
 
 	// _ "github.com/jamesconfy/ch2/tempconv"
-	_ "github.com/jamesconfy/ch2/tempconv"
-	"github.com/jamesconfy/solution/ch5/5.15/solutions"
+	_ "github.com/jamesconfy/solution/ch5/ch5"
 )
 
 func main() {

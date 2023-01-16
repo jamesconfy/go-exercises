@@ -1,4 +1,4 @@
-package solutions
+package ch5
 
 import "golang.org/x/net/html"
 
