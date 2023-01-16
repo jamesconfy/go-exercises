@@ -1,18 +1,17 @@
-package main
+package solutions
 
 import (
-	"fmt"
 	"math"
 )
 
-func main() {
-	mySlice := []int{1, 2, 3, 4, 5, 6, 8, 9, 11, 200, -50}
-	fmt.Printf("Max value is: %d\n", max(mySlice...))
-	fmt.Printf("Min value is: %d\n", min(mySlice...))
-	fmt.Println("Working")
-}
+// func main() {
+// 	mySlice := []int{1, 2, 3, 4, 5, 6, 8, 9, 11, 200, -50}
+// 	fmt.Printf("Max value is: %d\n", max(mySlice...))
+// 	fmt.Printf("Min value is: %d\n", min(mySlice...))
+// 	fmt.Println("Working")
+// }
 
-func max(vals ...int) int {
+func Max(vals ...int) int {
 	if len(vals) == 0 {
 		return 0
 	}
@@ -26,7 +25,7 @@ func max(vals ...int) int {
 	return maxVal
 }
 
-func min(vals ...int) int {
+func Min(vals ...int) int {
 	if len(vals) == 0 {
 		return 0
 	}
