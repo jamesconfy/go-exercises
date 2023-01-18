@@ -12,7 +12,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/jamesconfy/ch2/tempconv"
+	"gopl.io/ch2/tempconv"
 )
 
 func main() {

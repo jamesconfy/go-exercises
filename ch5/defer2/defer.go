@@ -12,7 +12,7 @@ import (
 	"runtime"
 )
 
-//!+
+// !+
 func main() {
 	defer printStack()
 	f(3)

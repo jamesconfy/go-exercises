@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-//!+main
+// !+main
 func bigSlowOperation() {
 	defer trace("bigSlowOperation")() // don't forget the extra parentheses
 	// ...lots of work...

@@ -8,7 +8,7 @@ package main
 
 import "fmt"
 
-//!+f
+// !+f
 func main() {
 	f(3)
 }
