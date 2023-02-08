@@ -12,10 +12,11 @@ import (
 	"log"
 	"math"
 	"net/http"
+
+	"gopl.io/ch7/eval"
 )
 
 //!+parseAndCheck
-import "gopl.io/ch7/eval"
 
 //!-parseAndCheck
 
@@ -63,7 +64,7 @@ func surface(w io.Writer, f func(x, y float64) float64) {
 
 // -- main code for gopl.io/ch7/surface --
 
-//!+parseAndCheck
+// !+parseAndCheck
 func parseAndCheck(s string) (eval.Expr, error) {
 	if s == "" {
 		return nil, fmt.Errorf("empty expression")
@@ -86,7 +87,7 @@ func parseAndCheck(s string) (eval.Expr, error) {
 
 //!-parseAndCheck
 
-//!+plot
+// !+plot
 func plot(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	expr, err := parseAndCheck(r.Form.Get("expr"))
@@ -103,9 +104,11 @@ func plot(w http.ResponseWriter, r *http.Request) {
 
 //!-plot
 
-//!+main
+// !+main
 func main() {
-	http.HandleFunc("/plot", plot)
+	mux := http.DefaultServeMux // HandleFunc("/plot", plot)
+	mux.HandleFunc("/plot", plot)
+	// mux.ServeHTTP(plot)
 	log.Fatal(http.ListenAndServe("localhost:8000", nil))
 }
 

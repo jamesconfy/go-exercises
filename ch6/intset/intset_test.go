@@ -41,6 +41,7 @@ func Example_two() {
 	fmt.Println(&x)         // "{1 9 42 144}"
 	fmt.Println(x.String()) // "{1 9 42 144}"
 	fmt.Println(x)          // "{[4398046511618 0 65536]}"
+	// fmt.Println(x.Len())
 	//!-note
 
 	// Output:

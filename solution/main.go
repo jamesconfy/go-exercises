@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"os"
 
 	"gopl.io/solution/ch5"
 	"gopl.io/solution/ch7"
@@ -20,5 +22,11 @@ func main() {
 	var f ch7.LineCounter
 	f.Write(buf)
 	fmt.Printf("Line is: %d\n", f)
+	s := ch7.NewReader("James")
+	k, _ := s.Read([]byte("Confidence"))
+	fmt.Println(k, &s)
 	// fmt.Printf()
+
+	var w io.ReadWriter = os.Stdout
+	w.Write([]byte("Hello\n"))
 }

@@ -13,10 +13,27 @@ import (
 
 type Celsius float64
 type Fahrenheit float64
+type Kelvin float64
 
-func CToF(c Celsius) Fahrenheit { return Fahrenheit(c*9.0/5.0 + 32.0) }
-func FToC(f Fahrenheit) Celsius { return Celsius((f - 32.0) * 5.0 / 9.0) }
+// CToF converts a Celsius temperature to Fahrenheit.
+func CToF(c Celsius) Fahrenheit { return Fahrenheit(c*9/5 + 32) }
 
+// FToC converts a Fahrenheit temperature to Celsius.
+func FToC(f Fahrenheit) Celsius { return Celsius((f - 32) * 5 / 9) }
+
+// KtoC converts a Kelvin temperature to Celsius.
+func KtoC(k Kelvin) Celsius { return Celsius(k - 273.15) }
+
+// CtoK converts a Celsius temperature to Kelvin.
+func CtoK(c Celsius) Kelvin { return Kelvin(c + 273.15) }
+
+// KtoF converts a Kelvin temperature to Fahrenheit.
+func KtoF(k Kelvin) Fahrenheit { return Fahrenheit((k-273.15)*1.8 + 32) }
+
+// FtoK converts a Fahrenheit temperature to Kelvin.
+func FtoK(f Fahrenheit) Kelvin { return Kelvin((f-32)/1.8 + 273.15) }
+
+// !-
 func (c Celsius) String() string { return fmt.Sprintf("%g°C", c) }
 
 /*
@@ -31,7 +48,7 @@ type Value interface {
 //!-flagvalue
 */
 
-//!+celsiusFlag
+// !+celsiusFlag
 // *celsiusFlag satisfies the flag.Value interface.
 type celsiusFlag struct{ Celsius }
 
@@ -45,6 +62,9 @@ func (f *celsiusFlag) Set(s string) error {
 		return nil
 	case "F", "°F":
 		f.Celsius = FToC(Fahrenheit(value))
+		return nil
+	case "K", "°K":
+		f.Celsius = KtoC(Kelvin(value))
 		return nil
 	}
 	return fmt.Errorf("invalid temperature %q", s)

@@ -45,6 +45,18 @@ func (s *IntSet) UnionWith(t *IntSet) {
 	}
 }
 
+// Get the length of IntSet
+// func (s IntSet) Len() (count int) {
+// 	// count := 0
+// 	for _, word := range s.words {
+// 		if word == 0 {
+// 			continue
+// 		}
+// 		count += 1
+// 	}
+// 	return
+// }
+
 //!-intset
 
 //!+string

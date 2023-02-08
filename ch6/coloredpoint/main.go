@@ -8,11 +8,11 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 	"math"
 )
 
 //!+decl
-import "image/color"
 
 type Point struct{ X, Y float64 }
 
@@ -84,6 +84,7 @@ func init() {
 	fmt.Println(p.Distance(*q.Point)) // "5"
 	q.Point = p.Point                 // p and q now share the same Point
 	p.ScaleBy(2)
+	// fmt.Println(p.Color.R)
 	fmt.Println(*p.Point, *q.Point) // "{2 2} {2 2}"
 	//!-indirect
 }
