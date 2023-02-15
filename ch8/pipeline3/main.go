@@ -9,23 +9,23 @@ package main
 
 import "fmt"
 
-//!+
-func counter(out chan<- int) {
+// !+
+func counter(send chan<- int) {
 	for x := 0; x < 100; x++ {
-		out <- x
+		send <- x
 	}
-	close(out)
+	close(send)
 }
 
-func squarer(out chan<- int, in <-chan int) {
-	for v := range in {
-		out <- v * v
+func squarer(send chan<- int, receive <-chan int) {
+	for v := range receive {
+		send <- v * v
 	}
-	close(out)
+	close(send)
 }
 
-func printer(in <-chan int) {
-	for v := range in {
+func printer(receive <-chan int) {
+	for v := range receive {
 		fmt.Println(v)
 	}
 }
