@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-//!+
+// !+
 func main() {
 	fmt.Println("Commencing countdown.")
 	tick := time.Tick(1 * time.Second)

@@ -1,17 +1,14 @@
-// Copyright © 2016 Alan A. A. Donovan & Brian W. Kernighan.
-// License: https://creativecommons.org/licenses/by-nc-sa/4.0/
-
-// See page 224.
-
 // Reverb2 is a TCP server that simulates an echo.
 package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"log"
 	"net"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -25,12 +22,42 @@ func echo(c net.Conn, shout string, delay time.Duration) {
 
 // !+
 func handleConn(c net.Conn) {
-	input := bufio.NewScanner(c)
-	for input.Scan() {
-		go echo(c, input.Text(), 4*time.Second)
+	wg := sync.WaitGroup{}
+	defer func() {
+		wg.Wait()
+		// NOTE: ignoring potential errors from input.Err()
+		c.Close()
+	}()
+	timer := time.NewTimer(10 * time.Second)
+	inputs := make(chan string)
+	go func() {
+		input := bufio.NewScanner(c)
+		for input.Scan() {
+			inputs <- input.Text()
+		}
+		if input.Err() != nil {
+			log.Println("scan:", input.Err())
+		}
+	}()
+
+	for {
+		select {
+		case input := <-inputs:
+			reset := 1 * time.Second
+			timer.Reset(10 * time.Second)
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				echo(c, input, reset)
+			}()
+		case <-timer.C:
+			by := bytes.NewBufferString("Closing gracefully\n")
+			p := by.Bytes()
+			c.Write([]byte(p))
+			return
+		}
+
 	}
-	// NOTE: ignoring potential errors from input.Err()
-	c.Close()
 }
 
 //!-

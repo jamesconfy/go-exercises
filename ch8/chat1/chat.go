@@ -1,9 +1,3 @@
-// Copyright © 2016 Alan A. A. Donovan & Brian W. Kernighan.
-// License: https://creativecommons.org/licenses/by-nc-sa/4.0/
-
-// See page 254.
-//!+
-
 // Chat is a server that lets clients chat with each other.
 package main
 
@@ -12,10 +6,14 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 )
 
-//!+broadcaster
-type client chan<- string // an outgoing message channel
+// !+broadcaster
+type client struct {
+	Out  chan<- string // an outgoing message channel
+	Name string
+}
 
 var (
 	entering = make(chan client)
@@ -31,39 +29,44 @@ func broadcaster() {
 			// Broadcast incoming message to all
 			// clients' outgoing message channels.
 			for cli := range clients {
-				cli <- msg
+				cli.Out <- msg
 			}
 
 		case cli := <-entering:
+			cli.Out <- "Current Presents:"
+			for c := range clients {
+				cli.Out <- c.Name
+			}
 			clients[cli] = true
 
 		case cli := <-leaving:
 			delete(clients, cli)
-			close(cli)
+			close(cli.Out)
 		}
 	}
 }
 
 //!-broadcaster
 
-//!+handleConn
+// !+handleConn
 func handleConn(conn net.Conn) {
 	ch := make(chan string) // outgoing client messages
 	go clientWriter(conn, ch)
 
 	who := conn.RemoteAddr().String()
-	ch <- "You are " + who
-	messages <- who + " has arrived"
-	entering <- ch
+	cli := client{ch, who}
+	ch <- time.Now().Format(time.RFC3339) + ": You are " + who
+	messages <- time.Now().Format(time.RFC3339) + ": " + who + " has arrived"
+	entering <- cli
 
 	input := bufio.NewScanner(conn)
 	for input.Scan() {
-		messages <- who + ": " + input.Text()
+		messages <- time.Now().Format(time.RFC3339) + ": " + who + ": " + input.Text()
 	}
 	// NOTE: ignoring potential errors from input.Err()
 
-	leaving <- ch
-	messages <- who + " has left"
+	leaving <- cli
+	messages <- time.Now().Format(time.RFC3339) + ": " + who + " has left"
 	conn.Close()
 }
 
@@ -75,7 +78,7 @@ func clientWriter(conn net.Conn, ch <-chan string) {
 
 //!-handleConn
 
-//!+main
+// !+main
 func main() {
 	listener, err := net.Listen("tcp", "localhost:8000")
 	if err != nil {
