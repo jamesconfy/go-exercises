@@ -1,13 +1,8 @@
-// Copyright © 2016 Alan A. A. Donovan & Brian W. Kernighan.
-// License: https://creativecommons.org/licenses/by-nc-sa/4.0/
-
-package bank_test
+package bank
 
 import (
 	"fmt"
 	"testing"
-
-	"gopl.io/ch9/bank1"
 )
 
 func TestBank(t *testing.T) {
@@ -15,14 +10,17 @@ func TestBank(t *testing.T) {
 
 	// Alice
 	go func() {
-		bank.Deposit(200)
-		fmt.Println("=", bank.Balance())
+		Deposit(200)
+		Withdraw(200)
+		fmt.Println("Balance =", Balance())
 		done <- struct{}{}
 	}()
 
 	// Bob
 	go func() {
-		bank.Deposit(100)
+		Deposit(50)
+		Withdraw(50)
+		Deposit(100)
 		done <- struct{}{}
 	}()
 
@@ -30,7 +28,31 @@ func TestBank(t *testing.T) {
 	<-done
 	<-done
 
-	if got, want := bank.Balance(), 300; got != want {
-		t.Errorf("Balance = %d, want %d", got, want)
+	if got, want := Balance(), 100; got != want {
+		t.Errorf("Balance: %d, want: %d", got, want)
+	}
+}
+
+func TestWithdrawal(t *testing.T) {
+	b1 := Balance()
+	ok := Withdraw(50)
+	if !ok {
+		t.Errorf("!ok. balance: %d", Balance())
+	}
+	expects := b1 - 50
+	if b2 := Balance(); b2 != expects {
+		t.Errorf("balance: %d, want: %d", b2, expects)
+	}
+}
+
+func TestWithdrawalInsufficient(t *testing.T) {
+	b1 := Balance()
+	ok := Withdraw(b1 + 1)
+	b2 := Balance()
+	if ok {
+		t.Errorf("!ok. balance: %d", b2)
+	}
+	if b2 != b1 {
+		t.Errorf("balance: %d, want: %d", b2, b1)
 	}
 }

@@ -1,17 +1,22 @@
-// Copyright © 2016 Alan A. A. Donovan & Brian W. Kernighan.
-// License: https://creativecommons.org/licenses/by-nc-sa/4.0/
-
-// See page 261.
-//!+
-
 // Package bank provides a concurrency-safe bank with one account.
 package bank
 
+type Withdrawal struct {
+	amount  int
+	success chan bool
+}
+
 var deposits = make(chan int) // send amount to deposit
 var balances = make(chan int) // receive balance
+var withdrawals = make(chan Withdrawal)
 
 func Deposit(amount int) { deposits <- amount }
 func Balance() int       { return <-balances }
+func Withdraw(amount int) bool {
+	ch := make(chan bool)
+	withdrawals <- Withdrawal{amount, ch}
+	return <-ch
+}
 
 func teller() {
 	var balance int // balance is confined to teller goroutine
@@ -19,6 +24,13 @@ func teller() {
 		select {
 		case amount := <-deposits:
 			balance += amount
+		case w := <-withdrawals:
+			if w.amount > balance {
+				w.success <- false
+				continue
+			}
+			balance -= w.amount
+			w.success <- true
 		case balances <- balance:
 		}
 	}
@@ -27,5 +39,3 @@ func teller() {
 func init() {
 	go teller() // start the monitor goroutine
 }
-
-//!-
