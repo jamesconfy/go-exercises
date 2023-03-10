@@ -6,16 +6,15 @@ package word
 import (
 	"fmt"
 	"math/rand"
+	"testing"
 	"time"
 )
 
 //!+bench
 
-import "testing"
-
 //!-bench
 
-//!+test
+// !+test
 func TestIsPalindrome(t *testing.T) {
 	var tests = []struct {
 		input string
@@ -37,6 +36,7 @@ func TestIsPalindrome(t *testing.T) {
 	}
 	for _, test := range tests {
 		if got := IsPalindrome(test.input); got != test.want {
+			// fmt.Println(test.input)
 			t.Errorf("IsPalindrome(%q) = %v", test.input, got)
 		}
 	}
@@ -44,12 +44,33 @@ func TestIsPalindrome(t *testing.T) {
 
 //!-test
 
-//!+bench
+// !+bench
 func BenchmarkIsPalindrome(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		IsPalindrome("A man, a plan, a canal: Panama")
 	}
 }
+
+// func TestSum(t *testing.T) {
+// 	tests := []struct {
+// 		x    int
+// 		y    int
+// 		want int
+// 	}{
+// 		{1, 2, 3},
+// 		{2, 2, 4},
+// 		{3, 3, 6},
+// 		{10, 10, 20},
+// 		{10, 11, 22},
+// 	}
+
+// 	for _, test := range tests {
+// 		if got := test.x + test.y; got != test.want {
+// 			// fmt.Println(test.input)
+// 			t.Errorf("Sum of (%d) and (%d) = %v", test.x, test.y, got)
+// 		}
+// 	}
+// }
 
 //!-bench
 
@@ -72,7 +93,7 @@ import "math/rand"
 //!-random
 */
 
-//!+random
+// !+random
 // randomPalindrome returns a palindrome whose length and contents
 // are derived from the pseudo-random number generator rng.
 func randomPalindrome(rng *rand.Rand) string {
@@ -100,6 +121,34 @@ func TestRandomPalindromes(t *testing.T) {
 	}
 }
 
+// randomPalindrome returns a palindrome whose length and contents
+// are derived from the pseudo-random number generator rng.
+func randomNonPalindrome(rng *rand.Rand) string {
+	n := rng.Intn(25) + 2 // random length up to 24
+	runes := make([]rune, n)
+	for i := 0; i < n-1; i++ {
+		r := rune('A' + rng.Intn('Z'-'A'))
+		runes[i] = r
+	}
+	runes[len(runes)-1] = rune(runes[0] + 1)
+	return string(runes)
+}
+
+func TestRandomNonPalindromes(t *testing.T) {
+	// Initialize a pseudo-random number generator.
+	seed := time.Now().UTC().UnixNano()
+	t.Logf("Random seed: %d", seed)
+	rng := rand.New(rand.NewSource(seed))
+
+	for i := 0; i < 10; i++ {
+		p := randomNonPalindrome(rng)
+		if IsPalindrome(p) {
+			t.Errorf("IsNonPalindrome(%q) = true", p)
+		}
+
+	}
+}
+
 //!-random
 
 /*
@@ -111,38 +160,39 @@ func TestRandomPalindromes(t *testing.T) {
 
 // randomPalindrome returns a palindrome whose length and contents
 // are derived from the pseudo-random number generator rng.
-func randomNoisyPalindrome(rng *rand.Rand) string {
-	n := rng.Intn(25) // random length up to 24
-	runes := make([]rune, n)
-	for i := 0; i < (n+1)/2; i++ {
-		r := rune(rng.Intn(0x200)) // random rune up to \u99
-		runes[i] = r
-		r1 := r
-		if unicode.IsLetter(r) && unicode.IsLower(r) {
-			r = unicode.ToUpper(r)
-			if unicode.ToLower(r) != r1 {
-				fmt.Printf("cap? %c %c\n", r1, r)
+
+	func randomNoisyPalindrome(rng *rand.Rand) string {
+		n := rng.Intn(25) // random length up to 24
+		runes := make([]rune, n)
+		for i := 0; i < (n+1)/2; i++ {
+			r := rune(rng.Intn(0x200)) // random rune up to \u99
+			runes[i] = r
+			r1 := r
+			if unicode.IsLetter(r) && unicode.IsLower(r) {
+				r = unicode.ToUpper(r)
+				if unicode.ToLower(r) != r1 {
+					fmt.Printf("cap? %c %c\n", r1, r)
+				}
+			}
+			runes[n-1-i] = r
+		}
+		return "?" + string(runes) + "!"
+	}
+
+	func TestRandomNoisyPalindromes(t *testing.T) {
+		// Initialize a pseudo-random number generator.
+		seed := time.Now().UTC().UnixNano()
+		t.Logf("Random seed: %d", seed)
+		rng := rand.New(rand.NewSource(seed))
+
+		n := 0
+		for i := 0; i < 1000; i++ {
+			p := randomNoisyPalindrome(rng)
+			if !IsPalindrome(p) {
+				t.Errorf("IsNoisyPalindrome(%q) = false", p)
+				n++
 			}
 		}
-		runes[n-1-i] = r
+		fmt.Fprintf(os.Stderr, "fail = %d\n", n)
 	}
-	return "?" + string(runes) + "!"
-}
-
-func TestRandomNoisyPalindromes(t *testing.T) {
-	// Initialize a pseudo-random number generator.
-	seed := time.Now().UTC().UnixNano()
-	t.Logf("Random seed: %d", seed)
-	rng := rand.New(rand.NewSource(seed))
-
-	n := 0
-	for i := 0; i < 1000; i++ {
-		p := randomNoisyPalindrome(rng)
-		if !IsPalindrome(p) {
-			t.Errorf("IsNoisyPalindrome(%q) = false", p)
-			n++
-		}
-	}
-	fmt.Fprintf(os.Stderr, "fail = %d\n", n)
-}
 */
