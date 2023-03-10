@@ -9,7 +9,7 @@ package memotest
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"sync"
@@ -17,14 +17,14 @@ import (
 	"time"
 )
 
-//!+httpRequestBody
+// !+httpRequestBody
 func httpGetBody(url string) (interface{}, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }
 
 //!-httpRequestBody

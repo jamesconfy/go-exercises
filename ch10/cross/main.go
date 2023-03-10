@@ -11,9 +11,9 @@ import (
 	"runtime"
 )
 
-//!+
+// !+
 func main() {
-	fmt.Println(runtime.GOOS, runtime.GOARCH)
+	fmt.Println(runtime.GOOS, runtime.GOARCH, runtime.GOROOT())
 }
 
 //!-
