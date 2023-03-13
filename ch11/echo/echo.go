@@ -20,7 +20,7 @@ var (
 	s = flag.String("s", " ", "separator")
 )
 
-var out io.Writer = os.Stdout // modified during testing
+var out io.ReadWriter = os.Stdout // modified during testing
 
 func main() {
 	flag.Parse()
@@ -31,6 +31,7 @@ func main() {
 }
 
 func echo(newline bool, sep string, args []string) error {
+	// fmt.Println(newline, sep)
 	fmt.Fprint(out, strings.Join(args, sep))
 	if newline {
 		fmt.Fprintln(out)
